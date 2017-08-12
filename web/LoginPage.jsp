@@ -54,6 +54,15 @@
                     </tr>
                 </table>
             </form>
+                        <form name="registercustomer" method="POST" action="CustomerServlet" onsubmit="return validateform2()">
+                <p> To register, click on the link below:</p>
+                <table cellspacing="8" border="0">
+
+                    <tr>
+                        <td align="left"><input type="submit" value="register" name="submit" style="width:75px" /><br /></td>
+                    </tr>
+                </table>
+            </form>
         </div>
     </body>
 </html>

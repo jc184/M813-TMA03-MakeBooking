@@ -1,16 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package model;
 
-import model.Booking;
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,18 +10,17 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
+ * Alba Airways application M813-TMA02-RegisterCustomer
+ * https://github.com/jc184/M813-TMA02-RegCustomer
  *
- * @author james
+ * @author james chalmers Open University F6418079
+ *
  */
 @Entity
 @Table(name = "customer")
@@ -46,7 +37,7 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "Customer.findByLoginName", query = "SELECT c FROM Customer c WHERE c.loginName = :loginName")
     , @NamedQuery(name = "Customer.findByLoginPassword", query = "SELECT c FROM Customer c WHERE c.loginPassword = :loginPassword")
     , @NamedQuery(name = "Customer.findByDateOfBirth", query = "SELECT c FROM Customer c WHERE c.dateOfBirth = :dateOfBirth")})
-public class Customer implements Serializable {
+public class Customer extends Person implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -54,36 +45,6 @@ public class Customer implements Serializable {
     @Basic(optional = false)
     @Column(name = "CustomerId")
     private Integer customerId;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 10)
-    @Column(name = "Title")
-    private String title;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 45)
-    @Column(name = "FirstName")
-    private String firstName;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 45)
-    @Column(name = "Surname")
-    private String surname;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 12)
-    @Column(name = "MobileNo")
-    private String mobileNo;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 12)
-    @Column(name = "HomePhoneNumber")
-    private String homePhoneNumber;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 45)
-    @Column(name = "EmailAddress")
-    private String emailAddress;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 45)
@@ -94,32 +55,36 @@ public class Customer implements Serializable {
     @Size(min = 1, max = 45)
     @Column(name = "LoginPassword")
     private String loginPassword;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "DateOfBirth")
-    @Temporal(TemporalType.DATE)
-    private Date dateOfBirth;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "customerCustomerId")
-    private Collection<Booking> bookingCollection;
 
+    /*
+     * Empty Constructor
+     */
     public Customer() {
     }
 
+    /*
+     * 
+     */
     public Customer(Integer customerId) {
         this.customerId = customerId;
     }
 
+    /*
+     * Full Constructor. Allows Customer instances to be created.
+    Postcondition: 
+    -- an instance of Customer is created, and it is displayed in albaregconfirmation.jsp
+    -- which is a sub class of Person
+    -- which is linked to Booking
+    -- and which is linked to Payment
+    -- and which is linked to Passenger
+    -- and the Customer’s details are added to the applications database
+    -- which enables the customer to login and make bookings
+     */
     public Customer(Integer customerId, String title, String firstName, String surname, String mobileNo, String homePhoneNumber, String emailAddress, String loginName, String loginPassword, Date dateOfBirth) {
+        super(title, firstName, surname, mobileNo, homePhoneNumber, emailAddress, dateOfBirth);
         this.customerId = customerId;
-        this.title = title;
-        this.firstName = firstName;
-        this.surname = surname;
-        this.mobileNo = mobileNo;
-        this.homePhoneNumber = homePhoneNumber;
-        this.emailAddress = emailAddress;
         this.loginName = loginName;
         this.loginPassword = loginPassword;
-        this.dateOfBirth = dateOfBirth;
     }
 
     public Integer getCustomerId() {
@@ -128,54 +93,6 @@ public class Customer implements Serializable {
 
     public void setCustomerId(Integer customerId) {
         this.customerId = customerId;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
-    public String getMobileNo() {
-        return mobileNo;
-    }
-
-    public void setMobileNo(String mobileNo) {
-        this.mobileNo = mobileNo;
-    }
-
-    public String getHomePhoneNumber() {
-        return homePhoneNumber;
-    }
-
-    public void setHomePhoneNumber(String homePhoneNumber) {
-        this.homePhoneNumber = homePhoneNumber;
-    }
-
-    public String getEmailAddress() {
-        return emailAddress;
-    }
-
-    public void setEmailAddress(String emailAddress) {
-        this.emailAddress = emailAddress;
     }
 
     public String getLoginName() {
@@ -192,23 +109,6 @@ public class Customer implements Serializable {
 
     public void setLoginPassword(String loginPassword) {
         this.loginPassword = loginPassword;
-    }
-
-    public Date getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public void setDateOfBirth(Date dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
-    @XmlTransient
-    public Collection<Booking> getBookingCollection() {
-        return bookingCollection;
-    }
-
-    public void setBookingCollection(Collection<Booking> bookingCollection) {
-        this.bookingCollection = bookingCollection;
     }
 
     @Override
@@ -233,7 +133,7 @@ public class Customer implements Serializable {
 
     @Override
     public String toString() {
-        return "controller.Customer[ customerId=" + customerId + " ]";
+        return "entities.Customer[ customerId=" + customerId + " ]";
     }
-    
+
 }
