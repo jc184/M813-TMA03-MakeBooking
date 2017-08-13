@@ -56,7 +56,7 @@
                                 );
                             });
                         });
-                        
+
                     }
                 });
             });
@@ -214,10 +214,19 @@
         <form name="chooseEconomy" action="SeatingServlet" method="POST">
             <p><input type="submit" value="Economy" name="submit" /> Select if you want an Economy Seat</p>
             <div class="radio">
-                    <p><input type="radio" value="ADULT" name="Passenger" checked="checked"/>Adult</p>
-                    <p><input type="radio" value="CHILD" name="Passenger" />Child</p>
-                    <p><input type="radio" value="INFANT" name="Passenger" />Infant</p>
-                </div>
+                <p><input type="radio" value="ADULT" name="Passenger" checked="checked"/>Adult</p>
+                <p><input type="radio" value="CHILD" name="Passenger" />Child</p>
+                <p><input type="radio" value="INFANT" name="Passenger" />Infant</p>
+            </div>
+        </form>
+        <form name="backtohome" action="BookingServlet" method="POST"> 
+            <table>
+                <tr>
+                    <!-- COMMENT HTML WITH THIS -->
+                    <td></td>
+                    <td><p><input type="submit" value="home" name="submit" style="width:75px" />Back to Home</p></td>
+                </tr>
+            </table>
         </form>
     </body>
 </html>

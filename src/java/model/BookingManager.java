@@ -8,6 +8,7 @@ package model;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -32,5 +33,21 @@ public class BookingManager implements Serializable {
                 return;
             }
         }
+    }
+
+    public int getBookingIdByAdd(int bookingID) {
+        bookingID = 0;
+        for (Booking booking : bookingStore.getAllRecords()) {
+            bookingID = booking.getBookingId();
+        }
+        return bookingID;
+    }
+
+    public Booking getBooking(int id) {
+        return bookingStore.getRecord(id);
+    }
+
+    public List<Booking> getAllBookings() {
+        return bookingStore.getAllRecords();
     }
 }

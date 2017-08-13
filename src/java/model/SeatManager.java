@@ -6,15 +6,18 @@
 package model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import model.SeatEnum;
 import model.SeatDataStore;
 import model.Booking;
 import model.Seat;
 import model.SeatTypeEnum;
+import static model.SeatTypeEnum.FIRSTCLASS;
 
 /**
  *
@@ -71,11 +74,30 @@ public class SeatManager implements Serializable {
                 if (seatStore.getRecord(seatEnum.ordinal()) == null) {
                     Seat seat = new Seat(seatNumber, aircraftId, seatType, bookingId, booked);
                     seatStore.createRecord(seat);
+                } else {
+                    msg = "That seat is already booked.";
                 }
             }
         } catch (ClassCastException cce) {
             cce.getMessage();
         }
+    }
+
+    public Seat addSeatReservation(int seatNumber, int aircraftId, String seatType, Booking bookingId, boolean booked) throws ClassNotFoundException {
+        try {
+            for (SeatEnum seatEnum : SeatEnum.values()) {
+                if (seatStore.getRecord(seatEnum.ordinal()) == null) {
+                    Seat seat = new Seat(seatNumber, aircraftId, seatType, bookingId, booked);
+                    seatStore.createRecord(seat);
+                    return seat;
+                } else {
+                    msg = "That seat is already booked.";
+                }
+            }
+        } catch (ClassCastException cce) {
+            cce.getMessage();
+        }
+        return null;
     }
 //    public boolean[] assignSeat(int seatNumber, SeatTypeEnum seatType) throws ClassNotFoundException {
 //
@@ -147,22 +169,24 @@ public class SeatManager implements Serializable {
         return false;
     }
 
-//    public boolean useList(boolean[] seats, boolean[] b) {
-//        return Arrays.asList(seats).contains(b);
-//    }
-//
-//    public static boolean useSet(boolean[] seats, boolean b) {
-//        Set<boolean[]> set = new HashSet<>(Arrays.asList(seats));
-//        return set.contains(b);
-//    }
+
     public List<Seat> getAllSeats() throws ClassNotFoundException {
         return seatStore.getAllRecords();
+    }
+
+    public List<Seat> getFilteredSeats(int bookingId) throws ClassNotFoundException {
+        List<Seat> rtnList = new ArrayList<>();
+        for (Seat seat : seatStore.getAllRecords()) {
+            if (seat.getBookingId().equals(bookingId)) {
+                rtnList.add(seat);
+            }
+        }
+        return (rtnList);
     }
 
 //    public Object[] getAllSeatBookings() {
 //        return seatStore.getAllRecords().subList(3, 4).toArray();
 //    }
-    
     public Object[] getAllSeatBookings() throws ClassNotFoundException {
         Object[] seatObjects = seatStore.getAllRecords().subList(3, 4).toArray();
         return seatObjects;

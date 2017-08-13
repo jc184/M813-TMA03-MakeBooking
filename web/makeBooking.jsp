@@ -14,6 +14,11 @@
  * Provided as is, without any warranty.
  * Feel free to use this code, but don't remove this disclaimer please.
 -->
+
+<%
+    int timeout = session.getMaxInactiveInterval();
+    response.setHeader("Refresh", timeout + "; URL = LoginPage.jsp");
+%>
 <html>
     <head>
         <title>AlbaAirways</title>
@@ -24,10 +29,11 @@
 
     </head>
     <body>
+
         <!-- UNCOMMENT HTML WITH THIS -->
         <div class="outer">
             <div class="header"><h1>AlbaAirways</h1>
-            <h3>You have logged in successfully</h3></div>
+                <h3>You have logged in successfully</h3></div>
 
             <div class="box"><h2>New Booking</h2>
                 <p>Enter your details in the form below and click 'add' to make a booking</p>
@@ -36,7 +42,7 @@
                         <!-- UNCOMMENT TO USE HTML BELOW -->
                         <tr>
                             <td align="left"><p><label for="customerId">Customer No:</label></p></td>
-                            <td><p><%= session.getAttribute("customerId")%></p></td>
+                            <td><input type="text" name="customerId" id="customerId" value="<%= session.getAttribute("customerId")%>" readonly="true" /></td>
                         </tr>
                         <tr>
                             <td align="left"><p><label for="noOfAdults">Number of Adults:</label></p></td>
@@ -93,8 +99,11 @@
                         <tr>
                             <td align="left"><p>Show daily outbound flights:</p></td>
                             <td><input type="submit" value="outbound flights" name="submit" style="width:125px" onclick="validate(this.form);return false;"/></td>
-                            <td><p name="outboundFlightId" id="outboundFlightId">Outbound Flight Id: <%= session.getAttribute("outboundFlightId")%></p></td>
                             <!--    -->
+                        </tr>
+                        <tr>
+                            <td align="left"><p><label for="outboundFlightId">Outbound Flight Id: </label></p></td>
+                            <td><input type="text" name="outboundFlightId" id="outboundFlightId" value="<%= session.getAttribute("outboundFlightId")%>" readonly="true" /></td>
                         </tr>
                         <tr>
                             <td align="left"><p><label for="returnFlightDate">Date of Travel (yyyy-mm-dd):</label></p></td>
@@ -103,8 +112,11 @@
                         <tr>
                             <td align="left"><p>Show daily return flights:</p></td>
                             <td><input type="submit" value="return flights" name="submit" style="width:125px" onclick="validate(this.form);return false;"/></td>
-                            <td><p name="returnFlightId" id="returnFlightId">Return Flight Id: <%= session.getAttribute("returnFlightId")%></p></td>
                             <!--    -->
+                        </tr>
+                        <tr>
+                            <td align="left"><p><label for="returnFlightId">Return Flight Id: </label></p></td>
+                            <td><input type="text" name="returnFlightId" id="returnFlightId" value="<%= session.getAttribute("returnFlightId")%>" readonly="true" /></td>
                         </tr>
                         <tr>
                             <td><p>Choose a Seat</p></td>

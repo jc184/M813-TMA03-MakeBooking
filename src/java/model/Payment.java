@@ -117,7 +117,7 @@ public class Payment implements Serializable {
     private Booking bookingBookingId;
     @JoinColumn(name = "Customer_CustomerId", referencedColumnName = "CustomerId")
     @ManyToOne(optional = false)
-    private CustomerOLD customerCustomerId;
+    private Customer customerCustomerId;
 
     public Payment() {
     }
@@ -253,11 +253,11 @@ public class Payment implements Serializable {
         this.bookingBookingId = bookingBookingId;
     }
 
-    public CustomerOLD getCustomerCustomerId() {
+    public Customer getCustomerCustomerId() {
         return customerCustomerId;
     }
 
-    public void setCustomerCustomerId(CustomerOLD customerCustomerId) {
+    public void setCustomerCustomerId(Customer customerCustomerId) {
         this.customerCustomerId = customerCustomerId;
     }
 

@@ -6,16 +6,21 @@
 package model;
 
 import java.io.Serializable;
+import java.util.Collection;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -60,10 +65,23 @@ public class Booking implements Serializable {
     @Column(name = "OutboundFlightID")
     private int outboundFlightID;
     @Column(name = "ReturnFlightID")
-    private Integer returnFlightID;
-    @JoinColumn(name = "Customer_CustomerId", referencedColumnName = "CustomerId")
+    private int returnFlightID;
+    @JoinTable(name = "flightbooking", joinColumns = {
+        @JoinColumn(name = "Booking_BookingId", referencedColumnName = "BookingId")}, inverseJoinColumns = {
+        @JoinColumn(name = "Flight_FlightId", referencedColumnName = "FlightId")})
+    @ManyToMany
+    private Collection<Flight> flightCollection;
+    @OneToMany(mappedBy = "bookingBookingId")
+    private Collection<Seat> seatCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bookingBookingId")
+    private Collection<Baggageitem> baggageitemCollection;
+    @JoinColumn(name = "CustomerId", referencedColumnName = "CustomerId")
     @ManyToOne(optional = false)
     private int customerId;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bookingBookingId")
+    private Collection<Passenger> passengerCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bookingBookingId")
+    private Collection<Payment> paymentCollection;
 
     public Booking() {
     }
@@ -80,7 +98,7 @@ public class Booking implements Serializable {
         this.outboundFlightID = outboundFlightID;
     }
 
-    public Booking(Integer bookingId, int noOfAdults, int noOfChildren, int noOfInfants, int outboundFlightID, Integer returnFlightID, int customerId) {
+    public Booking(Integer bookingId, int noOfAdults, int noOfChildren, int noOfInfants, int outboundFlightID, int returnFlightID, int customerId) {
         this.bookingId = bookingId;
         this.noOfAdults = noOfAdults;
         this.noOfChildren = noOfChildren;
@@ -89,8 +107,17 @@ public class Booking implements Serializable {
         this.returnFlightID = returnFlightID;
         this.customerId = customerId;
     }
-    
-    
+
+    public Booking(Integer bookingId, int noOfAdults, int noOfChildren, int noOfInfants, int outboundFlightID, int returnFlightID, Collection<Seat> seatCollection, int customerId) {
+        this.bookingId = bookingId;
+        this.noOfAdults = noOfAdults;
+        this.noOfChildren = noOfChildren;
+        this.noOfInfants = noOfInfants;
+        this.outboundFlightID = outboundFlightID;
+        this.returnFlightID = returnFlightID;
+        this.seatCollection = seatCollection;
+        this.customerId = customerId;
+    }
 
     public Integer getBookingId() {
         return bookingId;
@@ -148,6 +175,46 @@ public class Booking implements Serializable {
         this.customerId = customerId;
     }
 
+    public Collection<Flight> getFlightCollection() {
+        return flightCollection;
+    }
+
+    public void setFlightCollection(Collection<Flight> flightCollection) {
+        this.flightCollection = flightCollection;
+    }
+
+    public Collection<Seat> getSeatCollection() {
+        return seatCollection;
+    }
+
+    public void setSeatCollection(Collection<Seat> seatCollection) {
+        this.seatCollection = seatCollection;
+    }
+
+    public Collection<Baggageitem> getBaggageitemCollection() {
+        return baggageitemCollection;
+    }
+
+    public void setBaggageitemCollection(Collection<Baggageitem> baggageitemCollection) {
+        this.baggageitemCollection = baggageitemCollection;
+    }
+
+    public Collection<Passenger> getPassengerCollection() {
+        return passengerCollection;
+    }
+
+    public void setPassengerCollection(Collection<Passenger> passengerCollection) {
+        this.passengerCollection = passengerCollection;
+    }
+
+    public Collection<Payment> getPaymentCollection() {
+        return paymentCollection;
+    }
+
+    public void setPaymentCollection(Collection<Payment> paymentCollection) {
+        this.paymentCollection = paymentCollection;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -172,5 +239,5 @@ public class Booking implements Serializable {
     public String toString() {
         return "controller.Booking[ bookingId=" + bookingId + " ]";
     }
-    
+
 }

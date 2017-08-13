@@ -8,14 +8,11 @@ package controller;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -25,7 +22,6 @@ import javax.servlet.http.HttpSession;
 import model.BookingManager;
 import model.Flight;
 import model.FlightManager;
-import model.Seat;
 
 /**
  *
@@ -33,22 +29,17 @@ import model.Seat;
  */
 @WebServlet(name = "BookingServlet", urlPatterns = {"/BookingServlet"})
 public class BookingServlet extends HttpServlet {
-
+    
     private static final long serialVersionUID = 1L;
-
+    
     BookingManager bookingManager;
     FlightManager flightManager;
-
+    
     @Override
     public void init() throws ServletException {
         bookingManager = new BookingManager();
         flightManager = new FlightManager();
     }
-
-//    @Override
-//    public ServletContext getServletContext() {
-//        return super.getServletContext(); //To change body of generated methods, choose Tools | Templates.
-//    }
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -70,7 +61,7 @@ public class BookingServlet extends HttpServlet {
         int noOfAdults = 0;
         int noOfChildren = 0;
         int noOfInfants = 0;
-
+        
         String submit = request.getParameter("submit");
         if (submit != null && submit.length() > 0) {
             if (submit.equals("add")) {
@@ -80,9 +71,14 @@ public class BookingServlet extends HttpServlet {
                 noOfInfants = Integer.parseInt(request.getParameter("noOfInfants").trim());
                 int outboundFlightId = Integer.parseInt(request.getParameter("outboundFlightId").trim());
                 int returnFlightId = Integer.parseInt(request.getParameter("returnFlightId").trim());
-
-                bookingManager.addBooking(customerId, noOfAdults, noOfChildren, noOfInfants, outboundFlightId, returnFlightId);
-
+                
+                bookingManager.addBooking(noOfAdults, noOfChildren, noOfInfants, outboundFlightId, returnFlightId, customerId);
+                int bookingID = 0;
+                bookingID = bookingManager.getBookingIdByAdd(bookingID);
+                request.setAttribute("bookingID", bookingID);
+                request.setAttribute("booking", bookingManager.getBooking(bookingID));
+                url = "/bookingconfirmation.jsp";
+                
             } else if (submit.equals("outbound flights")) {
                 String outboundFlightDate = request.getParameter("outboundFlightDate");
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -101,12 +97,12 @@ public class BookingServlet extends HttpServlet {
                     request.setAttribute("msg", msg);
                     url = "/albavalidation.jsp";
                 }
-
+                
                 request.setAttribute("outboundFlightStore", flightManager.getFilteredFlights(sdfOutboundFlightDate));
-
+                
                 request.setAttribute("sdfOutboundFlightDate", sdfOutboundFlightDate);
                 request.setAttribute("cal", formatter.format(cal.getTime()));
-
+                
                 url = "/outboundflightpage.jsp";
             } else if (submit.equals("return flights")) {
                 String returnFlightDate = request.getParameter("returnFlightDate");
@@ -126,16 +122,16 @@ public class BookingServlet extends HttpServlet {
                     request.setAttribute("msg", msg);
                     url = "/albavalidation.jsp";
                 }
-
+                
                 request.setAttribute("returnFlightStore", flightManager.getFilteredFlights(sdfReturnFlightDate));
-
+                
                 request.setAttribute("sdfReturnFlightDate", sdfReturnFlightDate);
                 request.setAttribute("cal", formatter.format(cal.getTime()));
-
+                
                 url = "/returnflightpage.jsp";
             } else if (submit.equals("select outbound")) {
                 int outboundFlightId = Integer.parseInt(request.getParameter("outboundFlightId"));
-
+                
                 Flight outboundFlight = flightManager.getFlight(outboundFlightId);
                 request.setAttribute("outboundFlight", outboundFlight);
                 request.setAttribute("outboundFlightId", outboundFlight.getFlightId());
@@ -144,7 +140,7 @@ public class BookingServlet extends HttpServlet {
                 url = "/outboundflightinfopage.jsp";
             } else if (submit.equals("select return")) {
                 int returnFlightId = Integer.parseInt(request.getParameter("returnFlightId"));
-
+                
                 Flight returnFlight = flightManager.getFlight(returnFlightId);
                 request.setAttribute("returnFlight", returnFlight);
                 request.setAttribute("returnFlightId", returnFlight.getFlightId());
@@ -152,12 +148,7 @@ public class BookingServlet extends HttpServlet {
                 session.setAttribute("returnFlightId", returnFlightId);
                 url = "/returnflightinfopage.jsp";
             } else if (submit.equals("choose")) {
-//                int seatTotal = (int) session.getAttribute("bookingTotal");
-//                List<Seat> seatList = new ArrayList<>();
-//                for (int i = 0; i < seatTotal; i++) {
-//                    Seat seat = null;
-//                    seatList.add(seat);
-//                }
+                
                 noOfAdults = Integer.parseInt(request.getParameter("noOfAdults"));
                 noOfChildren = Integer.parseInt(request.getParameter("noOfChildren"));
                 noOfInfants = Integer.parseInt(request.getParameter("noOfInfants"));
@@ -173,10 +164,10 @@ public class BookingServlet extends HttpServlet {
                 url = "/makeBooking.jsp";
             }
         }
-
-//        RequestDispatcher dispatcher
-//                = getServletContext().getRequestDispatcher(url);
-//        dispatcher.forward(request, response);
+        
+        RequestDispatcher dispatcher
+                = getServletContext().getRequestDispatcher(url);
+        dispatcher.forward(request, response);
     }
 
     /**
@@ -190,36 +181,13 @@ public class BookingServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-//        int noOfAdults = 0;
-//        int noOfChildren = 0;
-//        int noOfInfants = 0;
-//        int bookingTotal = 0;
-//        String submit = request.getParameter("submit");
-//        if (submit != null && submit.length() > 0) {
-//            if (submit.equals("choose")) {
-////                int seatTotal = (int) session.getAttribute("bookingTotal");
-////                List<Seat> seatList = new ArrayList<>();
-////                for (int i = 0; i < seatTotal; i++) {
-////                    Seat seat = null;
-////                    seatList.add(seat);
-////                }
-//                noOfAdults = Integer.parseInt(request.getParameter("noOfAdults").trim());
-//                noOfChildren = Integer.parseInt(request.getParameter("noOfChildren").trim());
-//                noOfInfants = Integer.parseInt(request.getParameter("noOfInfants").trim());
-//                bookingTotal = noOfAdults + noOfChildren + noOfInfants;
-//                //session.setAttribute("bookingTotal", bookingTotal);
-//                request.setAttribute("bookingTotal", bookingTotal);
-//                //url = "/indexRevB.jsp";
-//                RequestDispatcher rd = request.getRequestDispatcher("/SeatingServlet/indexRevB.jsp");
-//                rd.forward(request, response);
-//            }
-//        }
+        
         try {
             processRequest(request, response);
         } catch (ParseException ex) {
             Logger.getLogger(BookingServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        
     }
 
     /**

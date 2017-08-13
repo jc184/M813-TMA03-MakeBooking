@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import model.Booking;
 import model.PassengerEnum;
 import model.Seat;
 import model.SeatEnum;
@@ -120,17 +121,18 @@ public class SeatingServlet extends HttpServlet {
     }
 
     public boolean[] assignSeat(int seatNumber, String seatType) throws ClassNotFoundException {
-
         seatManager.getSeats()[seatNumber] = true;
-        seatManager.addSeatBooking(seatNumber, aircraftId, seatType, null, true);
+        Booking bookingId = null;
+        seatManager.addSeatBooking(seatNumber, aircraftId, seatType, bookingId, true);
         return seatManager.getSeats();
     }
 
-    public void addToSeatList(HttpServletRequest request, HttpServletResponse response, Seat seat) {
+    public void addToSeatList(HttpServletRequest request, HttpServletResponse response, Seat seat) throws ClassNotFoundException {
         int seatTotal = (int) request.getAttribute("bookingTotal");
         List<Seat> seatList = new ArrayList<>();
         for (int i = 0; i < seatTotal; i++) {
-            seat = null;
+            Booking bookingId = null;
+            seat = seatManager.addSeatReservation(seatNumber, aircraftId, seatType.toString(), bookingId, isSeatBooked);
             seatList.add(seat);
             request.setAttribute("seatList", seatList);
         }
@@ -140,16 +142,16 @@ public class SeatingServlet extends HttpServlet {
         String passenger = request.getParameter("Passenger");
         if (economyCounter < 12) {
 //                    //If there are vacant seats, randomly select one etc...
-            Random random = new Random();
-            int economySeat = random.nextInt(23 - 12 + 1) + 12;
-            seatNumber = economySeat;
-//                if (seatManager.getSeats()[seatNumber] == false) {
-//                    seatManager.getSeats()[seatNumber] = true;
-//                    economyCounter++;
-//                    if (economyCounter >= 12) {
-//                        break;
-//                    }
-//                }
+            for (boolean seat : seatManager.getSeats()) {
+                if (seatType.equals(SeatTypeEnum.ECONOMY.toString())) {
+                    if (seat == false) {
+                        Random random = new Random();
+                        int economySeat = random.nextInt(23 - 12 + 1) + 12;
+                        seatNumber = economySeat;
+                    }
+                }
+            }
+
             if (seatManager.getSeats()[seatNumber] == false) {
                 seatManager.getSeats()[seatNumber] = true;
                 economyCounter++;

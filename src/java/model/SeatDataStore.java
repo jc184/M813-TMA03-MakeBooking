@@ -111,10 +111,10 @@ public class SeatDataStore {
             Seat resultBean = null;
 
             while (results.next()) {
-                
+
                 resultBean = new Seat(
                         results.getInt("SeatNo"),
-                        results.getInt("AircraftId"), 
+                        results.getInt("AircraftId"),
                         results.getString("SeatType"),
                         (Booking) results.getObject("BookingId"),
                         results.getBoolean("SeatBooked"));
@@ -128,10 +128,43 @@ public class SeatDataStore {
             System.err.println("Unable to get all records: [" + sqle.getErrorCode() + "] " + sqle.getMessage());
         } catch (ClassCastException cce) {
             System.err.println(cce.getMessage());
-            
+
         }
         return (allSeats);
     }
 
+    public List<Seat> getAllRecordsByBookingId(int bookingID) throws ClassNotFoundException {
+
+        Connection connection = getConnection();
+        List<Seat> bookingSeats = new ArrayList<>();
+        try {
+            PreparedStatement get = (PreparedStatement) connection.prepareStatement(
+                    "SELECT * FROM seat WHERE BookingId=?");
+            ResultSet results = get.executeQuery();
+
+            Seat resultBean = null;
+
+            while (results.next()) {
+
+                resultBean = new Seat(
+                        results.getInt("SeatNo"),
+                        results.getInt("AircraftId"),
+                        results.getString("SeatType"),
+                        (Booking) results.getObject("BookingId"),
+                        results.getBoolean("SeatBooked"));
+
+                bookingSeats.add(resultBean);
+
+            }
+
+            connection.close();
+        } catch (SQLException sqle) {
+            System.err.println("Unable to get all records: [" + sqle.getErrorCode() + "] " + sqle.getMessage());
+        } catch (ClassCastException cce) {
+            System.err.println(cce.getMessage());
+
+        }
+        return (bookingSeats);
+    }
 
 }

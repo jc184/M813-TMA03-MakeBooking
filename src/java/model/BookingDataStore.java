@@ -21,7 +21,7 @@ import java.util.Map;
  */
 class BookingDataStore {
 
-    private Connection getConnection() {//IDENTICAL TO METHOD IN CUSTDATASTORE
+    private Connection getConnection() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
 
@@ -47,21 +47,21 @@ class BookingDataStore {
         Connection myConnection = getConnection();
 
         try {
-            try (PreparedStatement create = (PreparedStatement) myConnection.prepareStatement("INSERT INTO booking VALUES (?, ?, ?, ?, ?, ?, ?, ?)")) {
+            try (PreparedStatement create = (PreparedStatement) myConnection.prepareStatement("INSERT INTO booking VALUES (?, ?, ?, ?, ?, ?, ?)")) {
                 create.setInt(1, booking.getBookingId());
-                create.setInt(2, booking.getCustomerId());
-                create.setInt(3, booking.getNoOfAdults());
-                create.setInt(4, booking.getNoOfChildren());
-                create.setInt(5, booking.getNoOfInfants());
-                create.setInt(6, booking.getOutboundFlightID());
-                create.setInt(7, booking.getReturnFlightID());
+                create.setInt(2, booking.getNoOfAdults());
+                create.setInt(3, booking.getNoOfChildren());
+                create.setInt(4, booking.getNoOfInfants());
+                create.setInt(5, booking.getOutboundFlightID());
+                create.setInt(6, booking.getReturnFlightID());
+                create.setInt(7, booking.getCustomerId());
 
                 create.executeUpdate();
             }
 
             myConnection.close();
         } catch (SQLException sqle) {
-            System.err.println("Unable to create record: [" + sqle.getErrorCode() + "]" + sqle.getMessage());
+            System.err.println("Unable to create record: [" + sqle.getErrorCode() + "]" + sqle.getMessage() + sqle.getSQLState());
         }
     }
 
@@ -69,7 +69,7 @@ class BookingDataStore {
         Booking booking = null;
         Connection connection = getConnection();
         try {
-            try (PreparedStatement get = (PreparedStatement) connection.prepareStatement("SELECT * FROM booking WHERE idBooking=?")) {
+            try (PreparedStatement get = (PreparedStatement) connection.prepareStatement("SELECT * FROM booking WHERE bookingId=?")) {
                 get.setInt(1, id);
 
                 ResultSet results = get.executeQuery();
@@ -78,12 +78,12 @@ class BookingDataStore {
 
                     booking = new Booking(
                             results.getInt("BookingId"),
-                            results.getInt("Customer_CustomerId"),
                             results.getInt("NoOfAdults"),
                             results.getInt("NoOfChildren"),
                             results.getInt("NoOfInfants"),
                             results.getInt("OutboundFlightId"),
-                            results.getInt("ReturnFlightId"));
+                            results.getInt("ReturnFlightId"),
+                            results.getInt("CustomerId"));
 
                 }
             }
@@ -110,12 +110,12 @@ class BookingDataStore {
                 while (results.next()) {
                     resultBean = new Booking(
                             results.getInt("BookingId"),
-                            results.getInt("Customer_CustomerId"),
                             results.getInt("NoOfAdults"),
                             results.getInt("NoOfChildren"),
                             results.getInt("NoOfInfants"),
                             results.getInt("OutboundFlightId"),
-                            results.getInt("ReturnFlightId"));
+                            results.getInt("ReturnFlightId"),
+                            results.getInt("CustomerId"));
 
                     allBookings.add(resultBean);
                 }
