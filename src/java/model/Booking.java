@@ -7,6 +7,7 @@ package model;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -72,7 +73,7 @@ public class Booking implements Serializable {
     @ManyToMany
     private Collection<Flight> flightCollection;
     @OneToMany(mappedBy = "bookingBookingId")
-    private Collection<Seat> seatCollection;
+    private Collection<List<Seat>> seatCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "bookingBookingId")
     private Collection<Baggageitem> baggageitemCollection;
     @JoinColumn(name = "CustomerId", referencedColumnName = "CustomerId")
@@ -108,7 +109,7 @@ public class Booking implements Serializable {
         this.customerId = customerId;
     }
 
-    public Booking(Integer bookingId, int noOfAdults, int noOfChildren, int noOfInfants, int outboundFlightID, int returnFlightID, Collection<Seat> seatCollection, int customerId) {
+    public Booking(Integer bookingId, int noOfAdults, int noOfChildren, int noOfInfants, int outboundFlightID, int returnFlightID, Collection<List<Seat>> seatCollection, int customerId) {
         this.bookingId = bookingId;
         this.noOfAdults = noOfAdults;
         this.noOfChildren = noOfChildren;
@@ -183,11 +184,11 @@ public class Booking implements Serializable {
         this.flightCollection = flightCollection;
     }
 
-    public Collection<Seat> getSeatCollection() {
+    public Collection<List<Seat>> getSeatCollection() {
         return seatCollection;
     }
 
-    public void setSeatCollection(Collection<Seat> seatCollection) {
+    public void setSeatCollection(Collection<List<Seat>> seatCollection) {
         this.seatCollection = seatCollection;
     }
 

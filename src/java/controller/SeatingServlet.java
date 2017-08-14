@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
@@ -30,7 +31,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 /**
- * Alba Airways application M813-TMA02-ChooseSeat
+ * Alba Airways application M813-TMA02-MakeBooking
  *
  * @author james chalmers Open University F6418079
  */
@@ -49,6 +50,8 @@ public class SeatingServlet extends HttpServlet {
     private boolean isSeatBooked;
     private int economyCounter;
     private int firstClassCounter;
+    List<Seat> outboundSeatList = new ArrayList<>();
+    List<Seat> returnSeatList = new ArrayList<>();
 
     /*
      * Creates a new instance of SeatManager
@@ -59,9 +62,13 @@ public class SeatingServlet extends HttpServlet {
     }
 
     public void chooseSeat(HttpServletRequest request, HttpServletResponse response) throws ClassNotFoundException, ServletException, IOException {
-
+        HttpSession session = request.getSession();
 //        if (seatManager.areAllSeatsBooked(seatManager.getSeats())) {
         String passenger = request.getParameter("Passenger");
+        String outboundOrReturn = request.getParameter("OutboundOrReturn");
+        int bookingTotal = (int) session.getAttribute("bookingTotal");
+        String submit = request.getParameter("submit");
+
         isSeatBooked = false;
         if (seatManager.getSeats()[seatNumber] == true) {
 //        if (seatManager.getAllSeatBookings()[seatNumber].equals(true)) {   
@@ -75,10 +82,79 @@ public class SeatingServlet extends HttpServlet {
                 if (firstClassCounter < 12) {
 
                     this.assignSeat(seatNumber, seatType.toString());
+
+                    if (outboundOrReturn.equals("Outbound")) {
+//                    if (submit.equals("choose outbound")) {    
+                        if (firstClassCounter + bookingTotal < 12) {
+
+                            outboundSeatList.add(seatManager.getSeat(seatNumber));
+                            request.setAttribute("outboundSeatList", outboundSeatList);
+                            session.setAttribute("outboundSeatList", outboundSeatList);
+                            List<Integer> seatNoArrayList = new ArrayList<>();
+                            for (Seat seat : outboundSeatList) {
+                                int arraySeatNumber = 0;
+                                arraySeatNumber = seatManager.getSeat(seatNumber).getSeatNumber();
+                                for (int i = 0; i < outboundSeatList.size(); i++) {
+                                    seatNoArrayList.add(arraySeatNumber);
+                                }
+
+                            }
+                            request.setAttribute("outboundSeatNoArrayList", Arrays.toString(seatNoArrayList.toArray()));
+                            session.setAttribute("outboundSeatNoArrayList", Arrays.toString(seatNoArrayList.toArray()));
+                            System.out.println(Arrays.toString(seatNoArrayList.toArray()));
+//                            System.out.println(Arrays.toString(outboundSeatList.toArray()));//FOR DEBUGGING
+
+                            if (outboundSeatList.size() >= bookingTotal) {
+                                msg = "You have used up all your outbound seats in your booking";
+                                request.setAttribute("msg", msg);
+                                session.setAttribute("msg", msg);
+                                url = "/indexRevB.jsp";
+                                //url = "/makeBooking.jsp";
+                            } else {
+                                url = "/indexRevB.jsp";
+                            }
+                        } else {
+                            msg = "There are not enough seats available for your booking requirements. Please choose another flight.";
+                            request.setAttribute("msg", msg);
+                            url = "/booked.jsp";
+                        }
+                    } else if (outboundOrReturn.equals("Return")) {
+//                    } else if (submit.equals("choose return")) {
+                        if (firstClassCounter + bookingTotal < 12) {
+
+                            returnSeatList.add(seatManager.getSeat(seatNumber));
+                            request.setAttribute("returnSeatList", returnSeatList);
+                            session.setAttribute("returnSeatList", returnSeatList);
+                            List<Integer> seatNoArrayList = new ArrayList<>();
+                            for (Seat seat : outboundSeatList) {
+                                int arraySeatNumber = 0;
+                                arraySeatNumber = seatManager.getSeat(seatNumber).getSeatNumber();
+                                for (int i = 0; i < returnSeatList.size(); i++) {
+                                    seatNoArrayList.add(arraySeatNumber);
+                                }
+                            }
+                            request.setAttribute("returnSeatNoArrayList", Arrays.toString(seatNoArrayList.toArray()));
+                            session.setAttribute("returnSeatNoArrayList", Arrays.toString(seatNoArrayList.toArray()));
+                            System.out.println(Arrays.toString(seatNoArrayList.toArray()));
+                            if (returnSeatList.size() >= bookingTotal) {
+                                msg = "You have used up all your return seats in your booking";
+                                request.setAttribute("msg", msg);
+                                session.setAttribute("msg", msg);
+                                url = "/makeBooking.jsp";
+                            } else {
+
+                            }
+                        } else {
+                            msg = "There are not enough seats available for your booking requirements. Please choose another flight.";
+                            request.setAttribute("msg", msg);
+                            url = "/booked.jsp";
+                        }
+                    }
                     isSeatBooked = true;
                     firstClassCounter++;
+
                 } else {
-                    msg = "All the Economy seats have been used up.";
+                    msg = "All the First Class seats have been used up.";
                     request.setAttribute("msg", msg);
                     url = "/booked.jsp";
                 }
@@ -115,16 +191,27 @@ public class SeatingServlet extends HttpServlet {
 //            url = "/booked.jsp";
 //        }
         //url = "/indexRevB.jsp";
-        RequestDispatcher dispatcher
-                = getServletContext().getRequestDispatcher(url);
-        dispatcher.forward(request, response);
+//        RequestDispatcher dispatcher
+//                = getServletContext().getRequestDispatcher(url);
+//        dispatcher.forward(request, response);
+//        return;
     }
 
     public boolean[] assignSeat(int seatNumber, String seatType) throws ClassNotFoundException {
         seatManager.getSeats()[seatNumber] = true;
         Booking bookingId = null;
-        seatManager.addSeatBooking(seatNumber, aircraftId, seatType, bookingId, true);
+        seatManager.addSeatReservation(seatNumber, aircraftId, seatType, bookingId, true);
+        seatManager.getSeat(seatNumber);
         return seatManager.getSeats();
+    }
+
+    public Collection<List<Seat>> getSeatCollection(int bookingTotal) {
+        Collection<List<Seat>> seatCollection = null;
+
+        seatCollection.add(outboundSeatList);
+        seatCollection.add(returnSeatList);
+
+        return seatCollection;
     }
 
     public void addToSeatList(HttpServletRequest request, HttpServletResponse response, Seat seat) throws ClassNotFoundException {
@@ -140,6 +227,9 @@ public class SeatingServlet extends HttpServlet {
 
     public boolean[] allocateEconomySeat(HttpServletRequest request, HttpServletResponse response, String seatType) throws ServletException, IOException, ClassNotFoundException {
         String passenger = request.getParameter("Passenger");
+        String outboundOrReturn = request.getParameter("OutboundOrReturn");
+        HttpSession session = request.getSession();
+        int bookingTotal = (int) session.getAttribute("bookingTotal");
         if (economyCounter < 12) {
 //                    //If there are vacant seats, randomly select one etc...
             for (boolean seat : seatManager.getSeats()) {
@@ -149,6 +239,71 @@ public class SeatingServlet extends HttpServlet {
                         int economySeat = random.nextInt(23 - 12 + 1) + 12;
                         seatNumber = economySeat;
                     }
+                }
+            }
+            if (outboundOrReturn.equals("Outbound")) {
+//                    if (submit.equals("choose outbound")) {    
+                if (economyCounter + bookingTotal < 12) {
+
+                    outboundSeatList.add(seatManager.getSeat(seatNumber));
+                    request.setAttribute("outboundSeatList", outboundSeatList);
+                    session.setAttribute("outboundSeatList", outboundSeatList);
+                    System.out.println(Arrays.toString(outboundSeatList.toArray()));//FOR DEBUGGING
+                    List<Integer> seatNoArrayList = new ArrayList<>();
+                    for (Seat seat : outboundSeatList) {//WRONG
+                        int arraySeatNumber = 0;
+                        arraySeatNumber = seatNumber;
+                        for (int i = 0; i < outboundSeatList.size(); i++) {
+                            seatNoArrayList.add(arraySeatNumber);
+                        }
+                    }
+                    request.setAttribute("outboundSeatNoArrayList", Arrays.toString(seatNoArrayList.toArray()));
+                    session.setAttribute("outboundSeatNoArrayList", Arrays.toString(seatNoArrayList.toArray()));
+                    System.out.println(Arrays.toString(seatNoArrayList.toArray()));
+                    if (outboundSeatList.size() >= bookingTotal) {
+                        msg = "You have used up all your outbound seats in your booking";
+                        request.setAttribute("msg", msg);
+                        session.setAttribute("msg", msg);
+                        url = "/indexRevB.jsp";
+                        //url = "/makeBooking.jsp";
+                    } else {
+                        url = "/indexRevB.jsp";
+                    }
+                } else {
+                    msg = "There are not enough seats available for your booking requirements. Please choose another flight.";
+                    request.setAttribute("msg", msg);
+                    url = "/booked.jsp";
+                }
+            } else if (outboundOrReturn.equals("Return")) {
+//                    } else if (submit.equals("choose return")) {
+                if (economyCounter + bookingTotal < 12) {
+
+                    returnSeatList.add(seatManager.getSeat(seatNumber));
+                    request.setAttribute("returnSeatList", returnSeatList);
+                    session.setAttribute("returnSeatList", returnSeatList);
+                    List<Integer> seatNoArrayList = new ArrayList<>();
+                    for (Seat seat : outboundSeatList) {//WRONG
+                        int arraySeatNumber = 0;
+                        arraySeatNumber = seatNumber;
+                        for (int i = 0; i < outboundSeatList.size(); i++) {
+                            seatNoArrayList.add(arraySeatNumber);
+                        }
+                    }
+                    request.setAttribute("returnSeatNoArrayList", Arrays.toString(seatNoArrayList.toArray()));
+                    session.setAttribute("returnSeatNoArrayList", Arrays.toString(seatNoArrayList.toArray()));
+                    System.out.println(Arrays.toString(seatNoArrayList.toArray()));
+                    if (returnSeatList.size() >= bookingTotal) {
+                        msg = "You have used up all your return seats in your booking";
+                        request.setAttribute("msg", msg);
+                        session.setAttribute("msg", msg);
+                        url = "/makeBooking.jsp";
+                    } else {
+
+                    }
+                } else {
+                    msg = "There are not enough seats available for your booking requirements. Please choose another flight.";
+                    request.setAttribute("msg", msg);
+                    url = "/booked.jsp";
                 }
             }
 
@@ -208,7 +363,7 @@ public class SeatingServlet extends HttpServlet {
             throws ServletException, IOException, ClassNotFoundException {
 
         request.setAttribute("seats", Arrays.toString(seatManager.getSeats()));
-//        int bookingTotal = (int) request.getAttribute("bookingTotal");
+        //int bookingTotal = (int) request.getAttribute("bookingTotal");
 
         String submit = request.getParameter("submit");
         if (submit != null && submit.length() > 0) {
@@ -340,6 +495,16 @@ public class SeatingServlet extends HttpServlet {
                 case "Economy":
                     seatType = SeatTypeEnum.ECONOMY;
                     this.allocateEconomySeat(request, response, seatType.toString());
+                    url = "/indexRevB.jsp";
+                    break;
+                case "choose outbound":
+                    //CODE HERE
+                    //this.outboundSeatList.add(seat);
+                    url = "/indexRevB.jsp";
+                    break;
+                case "choose return":
+                    //CODE HERE
+                    //this.returnSeatList.add(seat);
                     url = "/indexRevB.jsp";
                     break;
                 default:

@@ -8,6 +8,10 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="model.SeatManager" %>
 <!DOCTYPE html>
+<%
+    int timeout = session.getMaxInactiveInterval();
+    response.setHeader("Refresh", timeout + "; URL = LoginPage.jsp");
+%>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -197,8 +201,13 @@
                     </table>
                 </div>
                 <br /><br /><br /><br /><br /><br />
+
                 <div class="SeatingClassInfo"><p>1st Class Seats numbered from "seat01F" to "seat12F"</p></div><br /><br /><br />
-                <div class="SeatingClassInfo"><p>Economy Class Seats numbered from "seat13E" to "seat24E"</p></div>
+                <div class="SeatingClassInfo"><p>Economy Class Seats numbered from "seat13E" to "seat24E"</p></div> <br /><br /><br />
+                <div class="radio">
+                    <p><input type="radio" value="Outbound" name="OutboundOrReturn" checked="checked"/>Outbound</p>
+                    <p><input type="radio" value="Return" name="OutboundOrReturn" />Return</p>
+                </div>
                 <br /><br /><br />
                 <div class="radio">
                     <p><input type="radio" value="ADULT" name="Passenger" checked="checked"/>Adult</p>
@@ -208,11 +217,16 @@
             <div>
                 <p id="output"></p>
                 <p>The value of bookingTotal is: <%= session.getAttribute("bookingTotal")%></p>
+                <p><%= session.getAttribute("msg")%></p>
             </div>
         </div>
         <h3><%= request.getAttribute("seats")%></h3>
         <form name="chooseEconomy" action="SeatingServlet" method="POST">
             <p><input type="submit" value="Economy" name="submit" /> Select if you want an Economy Seat</p>
+            <div class="radio">
+                <p><input type="radio" value="Outbound" name="OutboundOrReturn" checked="checked"/>Outbound</p>
+                <p><input type="radio" value="Return" name="OutboundOrReturn" />Return</p>
+            </div>
             <div class="radio">
                 <p><input type="radio" value="ADULT" name="Passenger" checked="checked"/>Adult</p>
                 <p><input type="radio" value="CHILD" name="Passenger" />Child</p>

@@ -15,9 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import model.CustomerFacade;
 
 /**
- * Alba Airways application M813-TMA02-RegisterCustomer
- * https://github.com/jc184/M813-TMA02-RegCustomer Implementing the Facade
- * Pattern
+ * Alba Airways application M813-TMA02-MakeBooking
  *
  * @author james chalmers Open University F6418079
  */

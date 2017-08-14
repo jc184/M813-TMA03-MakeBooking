@@ -24,7 +24,7 @@
         <title>AlbaAirways</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
         <script type="text/javascript" src="scripts/datepickercontrol.js"></script>
-        <script type="text/javascript" src="scripts/bookingvalidation.js"></script>
+        <!-- <script type="text/javascript" src="scripts/bookingvalidation.js"></script>UNCOMMENT HTML WITH THIS -->
         <link type="text/css" rel="stylesheet" href="styles/datepickercontrol.css"/>
 
     </head>
@@ -98,7 +98,7 @@
                         </tr>
                         <tr>
                             <td align="left"><p>Show daily outbound flights:</p></td>
-                            <td><input type="submit" value="outbound flights" name="submit" style="width:125px" onclick="validate(this.form);return false;"/></td>
+                            <td><input type="submit" value="outbound flights" name="submit" style="width:115px" onclick="validate(this.form);return false;"/></td>
                             <!--    -->
                         </tr>
                         <tr>
@@ -111,7 +111,7 @@
                         </tr>
                         <tr>
                             <td align="left"><p>Show daily return flights:</p></td>
-                            <td><input type="submit" value="return flights" name="submit" style="width:125px" onclick="validate(this.form);return false;"/></td>
+                            <td><input type="submit" value="return flights" name="submit" style="width:115px" onclick="validate(this.form);return false;"/></td>
                             <!--    -->
                         </tr>
                         <tr>
@@ -119,8 +119,14 @@
                             <td><input type="text" name="returnFlightId" id="returnFlightId" value="<%= session.getAttribute("returnFlightId")%>" readonly="true" /></td>
                         </tr>
                         <tr>
-                            <td><p>Choose a Seat</p></td>
-                            <td><input type="submit" value="choose" name="submit" style="width:75px" /><br /></td>
+                            <td><p>Choose your Outbound Seat(s)</p></td>
+                            <td><input type="submit" value="choose outbound" name="submit" style="width:115px" /><br /></td>
+                            <td><%= session.getAttribute("outboundSeatNoArrayList") %></td>
+                        </tr>
+                        <tr>
+                            <td><p>Choose your Return Seat(s)</p></td>
+                            <td><input type="submit" value="choose return" name="submit" style="width:115px" /><br /></td>
+                            <td><%= session.getAttribute("returnSeatNoArrayList") %></td>
                         </tr>
 
                         <tr>
