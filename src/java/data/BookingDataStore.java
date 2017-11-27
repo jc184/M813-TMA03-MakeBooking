@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package model;
+package data;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -14,12 +14,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import entities.Booking;
 
 /**
  *
  * @author james
  */
-class BookingDataStore {
+public class BookingDataStore {
 
     private Connection getConnection() {
         try {

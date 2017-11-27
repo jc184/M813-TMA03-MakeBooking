@@ -13,9 +13,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import model.SeatEnum;
-import model.SeatDataStore;
-import model.Booking;
-import model.Seat;
+import data.SeatDataStore;
+import entities.Booking;
+import entities.Seat;
 import model.SeatTypeEnum;
 import static model.SeatTypeEnum.FIRSTCLASS;
 

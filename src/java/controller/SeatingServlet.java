@@ -21,9 +21,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import model.Booking;
+import entities.Booking;
 import model.PassengerEnum;
-import model.Seat;
+import entities.Seat;
 import model.SeatEnum;
 import model.SeatTypeEnum;
 import model.SeatManager;
@@ -82,73 +82,61 @@ public class SeatingServlet extends HttpServlet {
                 if (firstClassCounter < 12) {
 
                     this.assignSeat(seatNumber, seatType.toString());
-
+                    
                     if (outboundOrReturn.equals("Outbound")) {
-//                    if (submit.equals("choose outbound")) {    
-                        if (firstClassCounter + bookingTotal < 12) {
+                        while (outboundSeatList.size() < bookingTotal) {
 
-                            outboundSeatList.add(seatManager.getSeat(seatNumber));
-                            request.setAttribute("outboundSeatList", outboundSeatList);
-                            session.setAttribute("outboundSeatList", outboundSeatList);
-                            List<Integer> seatNoArrayList = new ArrayList<>();
-                            for (Seat seat : outboundSeatList) {
-                                int arraySeatNumber = 0;
-                                arraySeatNumber = seatManager.getSeat(seatNumber).getSeatNumber();
-                                for (int i = 0; i < outboundSeatList.size(); i++) {
-                                    seatNoArrayList.add(arraySeatNumber);
-                                }
+//                            if (firstClassCounter + bookingTotal < 12) {
+                                
+                                outboundSeatList.add(seatManager.getSeat(seatNumber));
+                                request.setAttribute("outboundSeatList", outboundSeatList);
+                                session.setAttribute("outboundSeatList", outboundSeatList);
 
-                            }
-                            request.setAttribute("outboundSeatNoArrayList", Arrays.toString(seatNoArrayList.toArray()));
-                            session.setAttribute("outboundSeatNoArrayList", Arrays.toString(seatNoArrayList.toArray()));
-                            System.out.println(Arrays.toString(seatNoArrayList.toArray()));
-//                            System.out.println(Arrays.toString(outboundSeatList.toArray()));//FOR DEBUGGING
+                                if (outboundSeatList.size() >= bookingTotal) {
 
-                            if (outboundSeatList.size() >= bookingTotal) {
-                                msg = "You have used up all your outbound seats in your booking";
-                                request.setAttribute("msg", msg);
-                                session.setAttribute("msg", msg);
-                                url = "/indexRevB.jsp";
-                                //url = "/makeBooking.jsp";
-                            } else {
-                                url = "/indexRevB.jsp";
-                            }
-                        } else {
-                            msg = "There are not enough seats available for your booking requirements. Please choose another flight.";
-                            request.setAttribute("msg", msg);
-                            url = "/booked.jsp";
+                                    msg = "You have used up all your outbound seats in your booking";
+                                    request.setAttribute("msg", msg);
+                                    session.setAttribute("msg", msg);
+                                    url = "/booked.jsp";
+                                    break;
+
+                                    //url = "/makeBooking.jsp";
+                                } else {
+                                    url = "/indexRevB.jsp";
+                                } 
+//                            } else {
+//                                msg = "There are not enough seats available for your booking requirements. Please choose another flight.";
+//                                request.setAttribute("msg", msg);
+//                                url = "/booked.jsp";
+//                            }
+
                         }
+                        
                     } else if (outboundOrReturn.equals("Return")) {
 //                    } else if (submit.equals("choose return")) {
-                        if (firstClassCounter + bookingTotal < 12) {
+                        while (returnSeatList.size() < bookingTotal) {
+//                            if (firstClassCounter + bookingTotal < 12) {
 
-                            returnSeatList.add(seatManager.getSeat(seatNumber));
-                            request.setAttribute("returnSeatList", returnSeatList);
-                            session.setAttribute("returnSeatList", returnSeatList);
-                            List<Integer> seatNoArrayList = new ArrayList<>();
-                            for (Seat seat : outboundSeatList) {
-                                int arraySeatNumber = 0;
-                                arraySeatNumber = seatManager.getSeat(seatNumber).getSeatNumber();
-                                for (int i = 0; i < returnSeatList.size(); i++) {
-                                    seatNoArrayList.add(arraySeatNumber);
+                                returnSeatList.add(seatManager.getSeat(seatNumber));
+                                request.setAttribute("returnSeatList", returnSeatList);
+                                session.setAttribute("returnSeatList", returnSeatList);
+
+                                if (returnSeatList.size() >= bookingTotal) {
+                                    msg = "You have used up all your return seats in your booking";
+                                    request.setAttribute("msg", msg);
+                                    session.setAttribute("msg", msg);
+                                    url = "/booked.jsp";
+                                    break;
+                                } else {
+
                                 }
-                            }
-                            request.setAttribute("returnSeatNoArrayList", Arrays.toString(seatNoArrayList.toArray()));
-                            session.setAttribute("returnSeatNoArrayList", Arrays.toString(seatNoArrayList.toArray()));
-                            System.out.println(Arrays.toString(seatNoArrayList.toArray()));
-                            if (returnSeatList.size() >= bookingTotal) {
-                                msg = "You have used up all your return seats in your booking";
-                                request.setAttribute("msg", msg);
-                                session.setAttribute("msg", msg);
-                                url = "/makeBooking.jsp";
-                            } else {
-
-                            }
-                        } else {
-                            msg = "There are not enough seats available for your booking requirements. Please choose another flight.";
-                            request.setAttribute("msg", msg);
-                            url = "/booked.jsp";
+//                            } else {
+//                                msg = "There are not enough seats available for your booking requirements. Please choose another flight.";
+//                                request.setAttribute("msg", msg);
+//                                url = "/booked.jsp";
+//                            }
                         }
+                        
                     }
                     isSeatBooked = true;
                     firstClassCounter++;
@@ -191,10 +179,10 @@ public class SeatingServlet extends HttpServlet {
 //            url = "/booked.jsp";
 //        }
         //url = "/indexRevB.jsp";
-//        RequestDispatcher dispatcher
-//                = getServletContext().getRequestDispatcher(url);
-//        dispatcher.forward(request, response);
-//        return;
+        RequestDispatcher dispatcher
+                = getServletContext().getRequestDispatcher(url);
+        dispatcher.forward(request, response);
+        return;
     }
 
     public boolean[] assignSeat(int seatNumber, String seatType) throws ClassNotFoundException {
@@ -249,22 +237,12 @@ public class SeatingServlet extends HttpServlet {
                     request.setAttribute("outboundSeatList", outboundSeatList);
                     session.setAttribute("outboundSeatList", outboundSeatList);
                     System.out.println(Arrays.toString(outboundSeatList.toArray()));//FOR DEBUGGING
-                    List<Integer> seatNoArrayList = new ArrayList<>();
-                    for (Seat seat : outboundSeatList) {//WRONG
-                        int arraySeatNumber = 0;
-                        arraySeatNumber = seatNumber;
-                        for (int i = 0; i < outboundSeatList.size(); i++) {
-                            seatNoArrayList.add(arraySeatNumber);
-                        }
-                    }
-                    request.setAttribute("outboundSeatNoArrayList", Arrays.toString(seatNoArrayList.toArray()));
-                    session.setAttribute("outboundSeatNoArrayList", Arrays.toString(seatNoArrayList.toArray()));
-                    System.out.println(Arrays.toString(seatNoArrayList.toArray()));
+
                     if (outboundSeatList.size() >= bookingTotal) {
                         msg = "You have used up all your outbound seats in your booking";
                         request.setAttribute("msg", msg);
                         session.setAttribute("msg", msg);
-                        url = "/indexRevB.jsp";
+                        url = "/booked.jsp";
                         //url = "/makeBooking.jsp";
                     } else {
                         url = "/indexRevB.jsp";
@@ -281,22 +259,12 @@ public class SeatingServlet extends HttpServlet {
                     returnSeatList.add(seatManager.getSeat(seatNumber));
                     request.setAttribute("returnSeatList", returnSeatList);
                     session.setAttribute("returnSeatList", returnSeatList);
-                    List<Integer> seatNoArrayList = new ArrayList<>();
-                    for (Seat seat : outboundSeatList) {//WRONG
-                        int arraySeatNumber = 0;
-                        arraySeatNumber = seatNumber;
-                        for (int i = 0; i < outboundSeatList.size(); i++) {
-                            seatNoArrayList.add(arraySeatNumber);
-                        }
-                    }
-                    request.setAttribute("returnSeatNoArrayList", Arrays.toString(seatNoArrayList.toArray()));
-                    session.setAttribute("returnSeatNoArrayList", Arrays.toString(seatNoArrayList.toArray()));
-                    System.out.println(Arrays.toString(seatNoArrayList.toArray()));
+
                     if (returnSeatList.size() >= bookingTotal) {
                         msg = "You have used up all your return seats in your booking";
                         request.setAttribute("msg", msg);
                         session.setAttribute("msg", msg);
-                        url = "/makeBooking.jsp";
+                        url = "/booked.jsp";
                     } else {
 
                     }
@@ -363,7 +331,7 @@ public class SeatingServlet extends HttpServlet {
             throws ServletException, IOException, ClassNotFoundException {
 
         request.setAttribute("seats", Arrays.toString(seatManager.getSeats()));
-        //int bookingTotal = (int) request.getAttribute("bookingTotal");
+        int bookingTotal = (int) request.getAttribute("bookingTotal");
 
         String submit = request.getParameter("submit");
         if (submit != null && submit.length() > 0) {
@@ -427,7 +395,7 @@ public class SeatingServlet extends HttpServlet {
                 case "seat12F":
                     seatNumber = 11;
                     seatType = SeatTypeEnum.FIRSTCLASS;
-                    chooseSeat(request, response);
+                    this.chooseSeat(request, response);
                     break;
 //                case "seat13E":
 //                    seatNumber = 12;
@@ -510,6 +478,7 @@ public class SeatingServlet extends HttpServlet {
                 default:
                     break;
             }
+            
         }
         RequestDispatcher dispatcher
                 = getServletContext().getRequestDispatcher(url);

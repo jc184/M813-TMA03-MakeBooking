@@ -224,7 +224,7 @@
         <form name="chooseEconomy" action="SeatingServlet" method="POST">
             <p><input type="submit" value="Economy" name="submit" /> Select if you want an Economy Seat</p>
             <div class="radio">
-                <p><input type="radio" value="Outbound" name="OutboundOrReturn" checked="checked"/>Outbound</p>
+                <p><input type="radio" value="Outbound" name="OutboundOrReturn"/>Outbound</p>
                 <p><input type="radio" value="Return" name="OutboundOrReturn" />Return</p>
             </div>
             <div class="radio">

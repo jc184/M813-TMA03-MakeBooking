@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import model.BookingManager;
-import model.Flight;
+import entities.Flight;
 import model.FlightManager;
 
 /**
@@ -160,6 +160,7 @@ public class BookingServlet extends HttpServlet {
                 RequestDispatcher rd = request.getRequestDispatcher("SeatingServlet");
                 if (rd != null) {
                     rd.forward(request, response);
+                    
                 }
             } else if (submit.equals("choose return")) {
 

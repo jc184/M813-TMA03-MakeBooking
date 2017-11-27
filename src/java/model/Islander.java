@@ -5,6 +5,7 @@
  */
 package model;
 
+import entities.Customer;
 import java.util.Date;
 
 /**

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package model;
+package data;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -12,7 +12,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import model.Flight;
+import entities.Flight;
+import entities.Flight;
 
 /**
  * Alba Airways application M813-TMA02-ChooseFlight

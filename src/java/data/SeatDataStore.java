@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package model;
+package data;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -14,8 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.lang.String;
 import java.lang.Class;
-import model.Booking;
-import model.Seat;
+import entities.Booking;
+import entities.Booking;
+import entities.Seat;
+import entities.Seat;
+import model.SeatTypeEnum;
 import model.SeatTypeEnum;
 
 /**

@@ -121,12 +121,12 @@
                         <tr>
                             <td><p>Choose your Outbound Seat(s)</p></td>
                             <td><input type="submit" value="choose outbound" name="submit" style="width:115px" /><br /></td>
-                            <td><%= session.getAttribute("outboundSeatNoArrayList") %></td>
+                            <td><%= session.getAttribute("outboundSeatList") %></td>
                         </tr>
                         <tr>
                             <td><p>Choose your Return Seat(s)</p></td>
                             <td><input type="submit" value="choose return" name="submit" style="width:115px" /><br /></td>
-                            <td><%= session.getAttribute("returnSeatNoArrayList") %></td>
+                            <td><%= session.getAttribute("returnSeatList") %></td>
                         </tr>
 
                         <tr>

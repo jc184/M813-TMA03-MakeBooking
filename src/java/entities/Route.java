@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package model;
+package entities;
 
+import entities.Flight;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collection;

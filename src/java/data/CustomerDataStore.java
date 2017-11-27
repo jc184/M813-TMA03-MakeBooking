@@ -1,5 +1,5 @@
 
-package model;
+package data;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -8,7 +8,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import model.Customer;
+import entities.Customer;
+import entities.Customer;
 
 /**
  * Alba Airways application M813-TMA02-RegisterCustomer

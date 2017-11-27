@@ -5,6 +5,8 @@
  */
 package model;
 
+import entities.Booking;
+import data.BookingDataStore;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;

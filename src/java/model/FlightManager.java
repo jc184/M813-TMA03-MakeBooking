@@ -5,6 +5,8 @@
  */
 package model;
 
+import entities.Flight;
+import data.FlightDataStore;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

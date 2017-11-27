@@ -1,6 +1,7 @@
 package model;
 
-import model.CustomerDataStore;
+import entities.Customer;
+import data.CustomerDataStore;
 import java.util.Date;
 
 /**
